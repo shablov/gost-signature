@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title></title>
+        <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+        <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+    </head>
+    <body>
+        <H1>Назначение Тестовой Системы</H1>
+        <P>Тестовая Система предназначена для упрощения создания тестов, автоматического их
+            запуска, и обработки результатов.</P>
+        <H1>Написание тестов</H1>
+        <P>Каждый тест представляет собой функцию&nbsp;имеющую тип TestResult
+            (*FTestFunction)(void).
+        </P>
+        <P>Тестовая Система позволяет регистрировать тесты-функции. При регистрации, кроме
+            самой функции, указывается дополнительная информация: строка с именем
+            тестируемой функции, строка с именем класса к которому эта функция принадлежит,
+            строка с кратким описанием&nbsp;теста.
+        </P>
+        <P>Для упрощения написания и регистрации тестов Тестовая Система
+            содержит&nbsp;макрос TEST(className, functionName, description), используемый
+            для объявления и регистрации теста-функции. Он создает функцию
+        </P>
+        <P>TestResult t_className_functionName(),
+        </P>
+        <P>и затем регистрирует ее следующим образом
+        </P>
+        <P>static bool t_className_functionName_value =
+            CTestCollection::registerTest(t_className_functionName, className,
+            functionName, description);</P>
+        <P>Существуют, также, упращенные макросы:</P>
+        <UL>
+            <LI>
+            TEST_CLASS(className, description) - автоматически формирует functionName
+            равным ".*",
+            <LI>
+                TEST_FUNCTION(functionName, description) - автоматически формирует className
+                равным&nbsp;пустой строке.</LI></UL>
+        <P>Рассмотрим простой пример теста для функции gcd из библиотеки Arageli:</P>
+        <P>#include "ts/ts.hpp"
+            <BR>
+            #include "arageli/arageli.hpp"
+            <BR>
+            <BR>
+            using namespace Arageli;
+            <BR>
+            <BR>
+            TEST_FUNCTION(gcd)
+            <BR>
+            {
+            <BR>
+            &nbsp;&nbsp;&nbsp; int a = 8;&nbsp;<BR>
+            &nbsp;&nbsp;&nbsp; int b = 64;&nbsp;<BR>
+            &nbsp;&nbsp;&nbsp; int g = gcd(a, b);&nbsp;<BR>
+            &nbsp;&nbsp;&nbsp; if(0 != a%g || 0 != b%g)&nbsp;<BR>
+            &nbsp;&nbsp;&nbsp; {&nbsp;<BR>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tout &lt;&lt; "GCD fails with"
+            &lt;&lt; " gcd( " &lt;&lt; a &lt;&lt; ", " &lt;&lt; b &lt;&lt; ") = " &lt;&lt;
+            g &lt;&lt; "\n";<BR>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return resFAIL;&nbsp;<BR>
+            &nbsp;&nbsp;&nbsp; }&nbsp;<BR>
+            &nbsp;&nbsp;&nbsp; return resOK;
+            <BR>
+            }
+        </P>
+        <P>Как мы можем видеть, написание теста предельно просто.</P>
+        <P>В начале файла должно стоять включение заголовочного файла ts/ts.hpp. За ним
+            должны идти остальные, необходимые тесту, заголовочные файлы и, далее, нужно
+            написать саму функцию теста. Для вывода результатов теста (плохих или хороших)
+            необходимо пользоваться потоком tout, определенным в Тестовой Системе.</P>
+        <H1>Запуск</H1>
+        <P>Тестовая Система не принимает параметров командрной строки. При запуске исполняемого
+            файла, последовательно запускаются все зарегестрированные тесты.<BR>
+        <H1>Просмотр результатов</H1>
+        <P>
+            Результаты запуска выводятся в стандартный поток вывода и&nbsp;представляют из
+            себя фрагмент&nbsp;XML (<A href="http://www.w3c.org/XML/">http://www.w3c.org/XML/</A>
+            )&nbsp;&nbsp;данных.
+        </P>
+        <P>Если воспользоваться скриптом ./build/run_tests.bat (при этом текущей
+            директорией должна быть ./build) то будет запущен файл ./bin/test.exe,
+            результаты будут сохранены в ./status и могут быть просмотрены открытием файла
+            ./status/test.log или ./status/test.err.log (содержат непосредственные результы запуска).</P>
+    </body>
+</html>
