@@ -1,0 +1,1 @@
+Signature files by the gost 1994 year and 2012 year. This is GUI application.
